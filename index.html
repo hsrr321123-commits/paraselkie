@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reproductor de Audio Estático</title>
+  <style>
+    body { font-family: Arial; text-align:center; margin-top:50px; background:#f9f9f9; }
+    h1 { color:#333; }
+    ul { list-style:none; padding:0; max-width:400px; margin:20px auto; }
+    li { margin:5px 0; cursor:pointer; color:#007bff; }
+    li:hover { text-decoration:underline; }
+    .controls { margin-top:20px; }
+    button { margin:0 10px; padding:10px 20px; font-size:16px; cursor:pointer; }
+    audio { margin-top:20px; width:80%; }
+  </style>
+</head>
+<body>
+  <h1>Reproductor de Audio</h1>
+
+  <div class="controls">
+    <button id="prevBtn">⏮️ Anterior</button>
+    <button id="playBtn">▶️ Reproducir/Pausar</button>
+    <button id="nextBtn">⏭️ Siguiente</button>
+    <button id="shuffleBtn">🔀 Aleatorio</button>
+  </div>
+
+  <audio id="audioPlayer" controls>Tu navegador no soporta audio.</audio>
+  <ul id="playlist"></ul>
+
+  <script>
+    const audioPlayer = document.getElementById('audioPlayer');
+    const playlist = document.getElementById('playlist');
+    const prevBtn = document.getElementById('prevBtn');
+    const playBtn = document.getElementById('playBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+
+    // Lista de tus audios pre-cargados
+    const tracks = [
+      "assets/audio/Alegre Vibes.mp3",
+      "assets/audio/Baila con Alegría.mp3",
+      "assets/audio/Baila con Esta Energía.mp3",
+      "assets/audio/Baila La Alegría.mp3",
+      "assets/audio/Baila y Sueña.mp3",
+      "assets/audio/Bala de Buena Energía.mp3",
+      "assets/audio/BLinksFelices.mp3",
+      "assets/audio/Brighter Days Ahead.mp3",
+      "assets/audio/Brighter Days.mp3",
+      "assets/audio/Dança da Luz.mp3",
+      "assets/audio/Dancing in Colors.mp3",
+      "assets/audio/Energía Alegre.mp3",
+      "assets/audio/Energía Brillante.mp3",
+      "assets/audio/Fluctuandoanki alegria.mp3",
+      "assets/audio/Ritmo Alegre (1).mp3",
+      "assets/audio/Ritmo Alegre.mp3",
+      "assets/audio/Ritmos Brillantes.mp3",
+      "assets/audio/Seddo That Groove.mp3",
+      "assets/audio/Sugelio Jalapa Wonderful.mp3",
+      "assets/audio/Sunny Beats.mp3",
+      "assets/audio/The Untitled.mp3",
+      "assets/audio/TonightToLetGo.mp3",
+      "assets/audio/Undanceable Joy.mp3",
+      "assets/audio/Vibrant Rhythms.mp3"
+    ];
+
+    let currentTrack = 0;
+    let isShuffling = false;
+
+    // Crear la playlist
+    tracks.forEach((track, index) => {
+      const li = document.createElement('li');
+      li.textContent = track.split("/").pop();
+      li.addEventListener('click', () => {
+        currentTrack = index;
+        playTrack();
+      });
+      playlist.appendChild(li);
+    });
+
+    function playTrack() {
+      audioPlayer.src = tracks[currentTrack];
+      audioPlayer.play().catch(() => {}); // evita error si no hay interacción aún
+      highlightTrack();
+    }
+
+    function highlightTrack() {
+      const items = playlist.querySelectorAll('li');
+      items.forEach((li, index) => {
+        li.style.fontWeight = index === currentTrack ? 'bold' : 'normal';
+      });
+    }
+
+    function nextTrack() {
+      currentTrack = isShuffling ? Math.floor(Math.random() * tracks.length) : (currentTrack + 1) % tracks.length;
+      playTrack();
+    }
+
+    function prevTrack() {
+      currentTrack = isShuffling ? Math.floor(Math.random() * tracks.length) : (currentTrack - 1 + tracks.length) % tracks.length;
+      playTrack();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (audioPlayer.paused) audioPlayer.play();
+      else audioPlayer.pause();
+    });
+    nextBtn.addEventListener('click', nextTrack);
+    prevBtn.addEventListener('click', prevTrack);
+    shuffleBtn.addEventListener('click', () => {
+      isShuffling = !isShuffling;
+      shuffleBtn.style.backgroundColor = isShuffling ? '#cfc' : '';
+    });
+
+    audioPlayer.addEventListener('ended', nextTrack);
+
+  </script>
+</body>
+</html>
